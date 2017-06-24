@@ -7,12 +7,14 @@ Encoding.default_external = 'UTF-8'
 class ScenarioLint
   attr_accessor :calls, :prohibit_words
 
+  # 呼称表と禁止語句読み込み
   def initialize
     @calls = JSON.parse(File.read('calls.json'))
     @prohibit_words = File.read('prohibit_words.txt').each_line.map(&:chomp).select{|n| n != '' }
   end
 
   def execute
+    # 検査対象テキスト　読み込み
     dir_path = File.expand_path(TXT_DIR + '/**')
     Dir.glob(dir_path) { |filepath|
       txt = File.read(filepath)
@@ -21,8 +23,14 @@ class ScenarioLint
 
       txt_lines.each_with_index { |line, i|
         if line == '' then next end
+
+        # 禁止語句チェック
         prohibit_check(line, i, filename)
+
+        # 呼称ミスチェック
         call_check(line, i, filename)
+
+        # その他チェック（文字数上限など）
         other_check(line, i, filename)
       }
     }

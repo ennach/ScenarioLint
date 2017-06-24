@@ -8,7 +8,10 @@ class ScenarioCount
   attr_accessor :dics
 
   def execute
+    # 結果リスト
     @dics = {}
+
+    # 検査対象テキスト読み込み
     dir_path = File.expand_path(TXT_DIR + '/**')
     Dir.glob(dir_path) { |filepath|
       txt = File.read(filepath)
@@ -21,12 +24,13 @@ class ScenarioCount
       }
     }
 
+    # 結果を表示
     @dics.each{ |user, serif|
       puts "【#{user}】 #{serif.length}"
     }
   end
 
-  # 呼称チェック
+  # セリフカウント
   def call_check(line, i, filename)
     if line =~ /^(.*?)「(.*?)」$/
       user = $1
